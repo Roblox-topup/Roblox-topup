@@ -41,6 +41,8 @@
   .add-btn { background: rgba(0, 0, 0, 0.1); border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; color: #000; font-weight: 500; transition: all 0.3s ease; }
   .add-btn:hover { background: rgba(0, 0, 0, 0.8); color: white; }
   .input-field { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; color: #000; font-size: 16px; }
+  .product-image { background-size: cover; background-position: center; position: relative; }
+  .product-price { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.9); color: #000; padding: 5px 10px; border-radius: 15px; font-weight: 600; font-size: 14px; }
   
   .checkout-section { display: none; background: rgba(255, 255, 255, 0.95); min-height: 100vh; padding: 20px; color: #000; }
   .checkout-header { display: flex; justify-content: center; align-items: center; position: relative; padding: 20px 0; }
@@ -67,10 +69,10 @@
         <div class="hero-title">Top Up Robux</div>
         <div class="user-controls">
           <button class="cart-btn" id="cart-button" onclick="showCheckout()">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
             </svg>
-             <span class="cart-count" id="cart-count">0</span>
+            <span class="cart-count" id="cart-count">0</span>
           </button>
         </div>
       </div>
@@ -105,23 +107,23 @@
           </div>
 
           <!-- Produk Lain -->
-          <div class="product-card" data-category="garden" data-name="Grow a Garden Pass">
-            <div class="product-image" style="background-image:url('https://via.placeholder.com/400x200/74B9FF/ffffff?text=Garden+Pass');height:150px;">
+          <div class="product-card" data-category="garden" data-name="Dragon Fly">
+            <div class="product-image" style="background-image:url('https://via.placeholder.com/400x200/74B9FF/ffffff?text=Dragon+Fly');height:150px;">
               <div class="product-price">Rp 40.000</div>
             </div>
             <div class="product-info">
               <div class="product-name">Dragon Fly</div>
-              <button class="add-btn" onclick="event.stopPropagation(); addToCart('Dragon Fly',40000)">+ Keranjang</button>
+              <button class="add-btn" onclick="event.stopPropagation(); addToCart('dragon-fly','Dragon Fly',40000)">+ Keranjang</button>
             </div>
           </div>
           
-          <div class="product-card" data-category="voucher" data-name="Voucher Game Pass">
-            <div class="product-image" style="background-image:url('https://via.placeholder.com/400x200/0984e3/ffffff?text=Voucher');height:150px;">
+          <div class="product-card" data-category="voucher" data-name="Red Fox">
+            <div class="product-image" style="background-image:url('https://via.placeholder.com/400x200/0984e3/ffffff?text=Red+Fox');height:150px;">
               <div class="product-price">Rp 20.000</div>
             </div>
             <div class="product-info">
               <div class="product-name">Red Fox</div>
-              <button class="add-btn" onclick="event.stopPropagation(); addToCart('Red Fox',20000)">+ Keranjang</button>
+              <button class="add-btn" onclick="event.stopPropagation(); addToCart('red-fox','Red Fox',20000)">+ Keranjang</button>
             </div>
           </div>
     
@@ -142,7 +144,7 @@
     <!-- Checkout -->
     <div id="checkoutSection" class="checkout-section">
       <div class="checkout-header">
-        <button class="close-checkout" onclick="showShop()">x</button>
+        <button class="close-checkout" onclick="showShop()">×</button>
         <div class="checkout-title">Receipt</div>
       </div>
       <input type="text" id="customerName" class="input-field" placeholder="Nama Anda" />
@@ -188,14 +190,14 @@
   }
 
   function addCustomRobux() {
-  let robux = parseInt(document.getElementById('robuxInput').value) || 0;
-  if (robux < 50) { 
-    return; // langsung batal tanpa alert
+    let robux = parseInt(document.getElementById('robuxInput').value) || 0;
+    if (robux < 50) { 
+      return; // langsung batal tanpa alert
+    }
+    let harga = robux * 200;
+    addToCart('robux-'+robux, robux + ' Robux', harga);
+    updateCartCount();
   }
-  let harga = robux * 200;
-  addToCart('robux-'+robux, robux + ' Robux', harga);
-  updateCartCount();
-}
 
   function filterProducts(category) {
     currentFilter = category;
@@ -207,12 +209,12 @@
     event.target.classList.add('active');
     
     const titles = {
-      'all': 'Semua Produk',
+      'all': 'All products',
       'garden': 'Grow a Garden',
       'robux': 'Top Up Robux',
       'voucher': 'Voucher'
     };
-    sectionTitle.textContent = titles[category] || 'Semua Produk';
+    sectionTitle.textContent = titles[category] || 'All products';
     
     let visibleCount = 0;
     cards.forEach(card => {
@@ -312,4 +314,4 @@
   updateCartCount();
 </script>
 </body>
-  </html>
+</html>
