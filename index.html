@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Top Up Robux</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #333333 50%, #1a1a1a 75%, #000000 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+    color: #ffffff;
+    min-height: 100vh;
+  }
+  @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  .container { max-width: 100%; margin: auto; min-height: 100vh; position: relative; }
+  
+  .hero-header { background: rgba(255, 255, 255, 0.95); padding: 20px; }
+  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .hero-title { font-size: 28px; font-weight: 700; color: #000; }
+  .user-controls { display: flex; align-items: center; }
+  .cart-btn { background: none; border: none; cursor: pointer; position: relative; }
+  .cart-count { position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+  
+  .search-container { margin-bottom: 15px; }
+  .search-box { width: 100%; padding: 12px 20px; border: 2px solid #ddd; border-radius: 25px; font-size: 16px; color: #000; background: white; }
+  
+  .nav-sections { display: flex; gap: 10px; overflow-x: auto; }
+  .nav-btn { background: rgba(0, 0, 0, 0.1); border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; color: #000; font-weight: 500; white-space: nowrap; transition: all 0.3s ease; }
+  .nav-btn:hover, .nav-btn.active { background: #000; color: white; }
+  
+  .shop-header { background: rgba(255, 255, 255, 0.9); padding: 20px; color: #000; }
+  .shop-title { font-size: 20px; font-weight: 600; }
+  .product-selection { padding: 20px; background: rgba(255, 255, 255, 0.95); }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); color: #000; transition: transform 0.3s ease; padding: 15px; }
+  .product-card:hover { transform: translateY(-2px); }
+  .product-info { padding: 10px; }
+  .product-name { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+  .add-btn { background: rgba(0, 0, 0, 0.1); border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; color: #000; font-weight: 500; transition: all 0.3s ease; }
+  .add-btn:hover { background: rgba(0, 0, 0, 0.8); color: white; }
+  .input-field { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; color: #000; font-size: 16px; }
+  
+  .checkout-section { display: none; background: rgba(255, 255, 255, 0.95); min-height: 100vh; padding: 20px; color: #000; }
+  .checkout-header { display: flex; justify-content: center; align-items: center; position: relative; padding: 20px 0; }
+  .checkout-title { font-size: 28px; font-weight: 700; color: #000; }
+  .close-checkout { position: absolute; left: 0; background: none; border: none; color: #000; font-size: 28px; font-weight: 700; cursor: pointer; }
+  .receipt-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); margin-top: 20px; }
+  .receipt-header { background: linear-gradient(135deg, #000, #333); padding: 20px; color: white; text-align: center; }
+  .receipt-title { font-weight: 700; font-size: 24px; margin-bottom: 5px; }
+  .receipt-subtitle { font-weight: 400; font-size: 14px; opacity: 0.8; }
+  .receipt-items { padding: 15px; }
+  .receipt-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; }
+  .item-name-receipt { font-weight: 600; color: #000; }
+  .item-qty-price { font-size: 14px; color: #333; display: flex; align-items: center; gap: 6px; }
+  .qty-btn { background: #000; border: none; color: white; font-weight: 700; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; }
+  .summary-row-receipt { display: flex; justify-content: space-between; padding: 10px 15px; font-weight: 700; color: #000; font-size: 18px; }
+  .confirm-btn { background: #000; color: white; padding: 15px; border: none; border-radius: 20px; cursor: pointer; margin-top: 20px; width: 100%; font-size: 16px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div id="mainHeader" class="hero-header">
+      <div class="header-top">
+        <div class="hero-title">Top Up Robux</div>
+        <div class="user-controls">
+          <button class="cart-btn" id="cart-button" onclick="showCheckout()">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+             <span class="cart-count" id="cart-count">0</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="search-container">
+        <input type="text" id="searchBox" class="search-box" placeholder="Cari produk..." onkeyup="searchProducts()" />
+      </div>
+      
+      <div class="nav-sections">
+        <button class="nav-btn active" onclick="filterProducts('all')">Home</button>
+        <button class="nav-btn" onclick="filterProducts('garden')">Grow a Garden</button>
+        <button class="nav-btn" onclick="filterProducts('robux')">Robux</button>
+      </div>
+    </div>
+    
+    <!-- Produk -->
+    <div id="shopSection">
+      <div class="shop-header"><div class="shop-title" id="sectionTitle">All products</div></div>
+      <div class="product-selection">
+        <div class="product-grid" id="productGrid">
+          
+          <!-- Custom Robux -->
+          <div class="product-card" data-category="robux" data-name="Custom Robux">
+            <div class="product-info">
+              <div class="product-name">💎 Top Up Robux</div>
+              <label>Jumlah Robux</label>
+              <input type="number" id="robuxInput" min="50" step="50" class="input-field" placeholder="Contoh: 50" oninput="updateRobuxPrice()">
+              <label>Harga</label>
+              <input type="text" id="robuxPrice" class="input-field" readonly placeholder="Rp 0">
+              <button class="add-btn" onclick="addCustomRobux()">+ Keranjang</button>
+            </div>
+          </div>
+
+          <!-- Produk Lain -->
+          <div class="product-card" data-category="garden" data-name="Grow a Garden Pass">
+            <div class="product-image" style="background-image:url('https://via.placeholder.com/400x200/74B9FF/ffffff?text=Garden+Pass');height:150px;">
+              <div class="product-price">Rp 25.000</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Grow a Garden Pass</div>
+              <button class="add-btn" onclick="event.stopPropagation(); addToCart('garden-pass','Grow a Garden Pass',25000)">+ Keranjang</button>
+            </div>
+          </div>
+          
+          <div class="product-card" data-category="voucher" data-name="Voucher Game Pass">
+            <div class="product-image" style="background-image:url('https://via.placeholder.com/400x200/0984e3/ffffff?text=Voucher');height:150px;">
+              <div class="product-price">Rp 50.000</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Voucher Game Pass</div>
+              <button class="add-btn" onclick="event.stopPropagation(); addToCart('voucher-gamepass','Voucher Game Pass',50000)">+ Keranjang</button>
+            </div>
+          </div>
+    
+          <div class="product-card" data-category="voucher" data-name="Voucher Game Pass">
+            <div class="product-image" style="background-image:url('https://via.placeholder.com/400x200/0984e3/ffffff?text=Voucher');height:150px;">
+              <div class="product-price">Rp 50.000</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Voucher Game Pass</div>
+              <button class="add-btn" onclick="event.stopPropagation(); addToCart('voucher-gamepass','Voucher Game Pass',50000)">+ Keranjang</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    
+    <!-- Checkout -->
+    <div id="checkoutSection" class="checkout-section">
+      <div class="checkout-header">
+        <button class="close-checkout" onclick="showShop()">x</button>
+        <div class="checkout-title">Receipt</div>
+      </div>
+      <input type="text" id="customerName" class="input-field" placeholder="Nama Anda" />
+      <textarea id="customerAddress" class="input-field" placeholder="Alamat Anda" rows="3"></textarea>
+      <div class="receipt-container">
+        <div class="receipt-header">
+          <div class="receipt-title">🧾 RECEIPT</div>
+          <div class="receipt-subtitle">Deshawn Shop</div>
+        </div>
+        <div class="receipt-items" id="receiptItems"></div>
+        <div class="summary-row-receipt"><span>Total</span><span id="summaryTotal">Rp 0</span></div>
+      </div>
+      <button class="confirm-btn" onclick="sendToWhatsApp()">Confirm</button>
+    </div>
+  </div>
+
+<script>
+  let currentFilter = 'all';
+  
+  function updateCartCount(){
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById('cart-count').textContent = count;
+  }
+
+  function addToCart(id, name, price){
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let item = cart.find(i => i.id === id);
+    if(item){ item.quantity++; } 
+    else { cart.push({ id, name, price, quantity: 1 }); }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+  }
+
+  function updateRobuxPrice() {
+    let robux = parseInt(document.getElementById('robuxInput').value) || 0;
+    if (robux < 50) { 
+      document.getElementById('robuxPrice').value = "Minimal 50 Robux"; 
+      return; 
+    }
+    let harga = robux * 200;
+    document.getElementById('robuxPrice').value = "Rp " + harga.toLocaleString();
+  }
+
+  function addCustomRobux() {
+  let robux = parseInt(document.getElementById('robuxInput').value) || 0;
+  if (robux < 50) { 
+    return; // langsung batal tanpa alert
+  }
+  let harga = robux * 200;
+  addToCart('robux-'+robux, robux + ' Robux', harga);
+  updateCartCount();
+}
+
+  function filterProducts(category) {
+    currentFilter = category;
+    const cards = document.querySelectorAll('.product-card');
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const sectionTitle = document.getElementById('sectionTitle');
+    
+    navButtons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    const titles = {
+      'all': 'Semua Produk',
+      'garden': 'Grow a Garden',
+      'robux': 'Top Up Robux',
+      'voucher': 'Voucher'
+    };
+    sectionTitle.textContent = titles[category] || 'Semua Produk';
+    
+    let visibleCount = 0;
+    cards.forEach(card => {
+      if (category === 'all' || card.dataset.category === category) {
+        card.style.display = 'block';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function searchProducts() {
+    const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+    const cards = document.querySelectorAll('.product-card');
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+      const productName = card.dataset.name.toLowerCase();
+      const matchesSearch = productName.includes(searchTerm);
+      const matchesFilter = currentFilter === 'all' || card.dataset.category === currentFilter;
+      
+      if (matchesSearch && matchesFilter) {
+        card.style.display = 'block';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function loadReceipt(){
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let html = '', total = 0;
+    cart.forEach((item, index) => {
+      let sub = item.price * item.quantity;
+      total += sub;
+      html += `<div class="receipt-item">
+          <div>
+            <div class="item-name-receipt">${item.name}</div>
+            <div class="item-qty-price">
+              <button class="qty-btn" onclick="changeQty(${index}, -1)">–</button>
+              ${item.quantity}
+              <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+              x Rp ${item.price.toLocaleString()}
+            </div>
+          </div>
+          <div>Rp ${sub.toLocaleString()}</div>
+        </div>`;
+    });
+    if(cart.length === 0) html = '<p style="padding:15px;color:#000;">Keranjang kosong</p>';
+    document.getElementById('receiptItems').innerHTML = html;
+    document.getElementById('summaryTotal').textContent = 'Rp ' + total.toLocaleString();
+  }
+
+  function changeQty(index, delta){
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart[index].quantity += delta;
+    if(cart[index].quantity <= 0) cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    loadReceipt();
+    updateCartCount();
+  }
+
+  function sendToWhatsApp(){
+    let name = document.getElementById('customerName').value.trim();
+    let address = document.getElementById('customerAddress').value.trim();
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if(!name || !address || cart.length === 0){
+      alert("Harap isi nama, alamat, dan pastikan keranjang tidak kosong!");
+      return;
+    }
+    let msg = `Nama: ${name}\nAlamat: ${address}\n\nPesanan:\n`, total = 0;
+    cart.forEach(item => {
+      let sub = item.price * item.quantity;
+      total += sub;
+      msg += `${item.quantity} x ${item.name} - Rp ${sub.toLocaleString()}\n`;
+    });
+    msg += `\nTotal: Rp ${total.toLocaleString()}`;
+    window.open(`https://wa.me/6282382052250?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  function showCheckout(){
+    document.getElementById('mainHeader').style.display = 'none';
+    document.getElementById('shopSection').style.display = 'none';
+    document.getElementById('checkoutSection').style.display = 'block';
+    loadReceipt();
+  }
+
+  function showShop(){
+    document.getElementById('mainHeader').style.display = 'block';
+    document.getElementById('shopSection').style.display = 'block';
+    document.getElementById('checkoutSection').style.display = 'none';
+    updateCartCount();
+  }
+
+  updateCartCount();
+</script>
+</body>
+  </html>
