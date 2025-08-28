@@ -186,6 +186,9 @@
           <div class="receipt-subtitle">Deshawn Shop</div>
         </div>
         <div class="receipt-items" id="receiptItems"></div>
+       <input type="text" id="promoCode" class="input-field" placeholder="Promo Code" />
+<button class="add-btn" onclick="applyPromo()">Gunakan Promo</button>
+<p id="promoMessage" style="color:green; font-weight:600; margin-top:5px;"></p>
         <div class="summary-row-receipt"><span>Total</span><span id="summaryTotal">Rp 0</span></div>
       </div>
       <button class="confirm-btn" onclick="sendToWhatsApp()">Confirm</button>
@@ -345,6 +348,114 @@
 
   // inisialisasi awal
   updateCartCount();
+
+     let appliedPromo = null; // promo yang dipakai
+
+// daftar kode promo
+const promoList = {
+  "DISKON10": { type: "percent", value: 10 },   // diskon 10%
+  "DISKON5000": { type: "nominal", value: 10000 } // potongan Rp 5.000
+};
+
+function applyPromo() {
+  let code = document.getElementById("promoCode").value.trim().toUpperCase();
+  let promoMsg = document.getElementById("promoMessage");
+
+  if (appliedPromo) {
+    promoMsg.textContent = "Promo sudah digunakan.";
+    promoMsg.style.color = "red";
+    return;
+  }
+
+  if (promoList[code]) {
+    appliedPromo = { code, ...promoList[code] };
+    promoMsg.textContent = "Promo " + code + " berhasil diterapkan!";
+    promoMsg.style.color = "green";
+    loadReceipt();
+  } else {
+    promoMsg.textContent = "Kode promo tidak valid.";
+    promoMsg.style.color = "red";
+  }
+}
+
+function loadReceipt(){
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  let html = '', total = 0;
+  cart.forEach((item, index) => {
+    let sub = item.price * item.quantity;
+    total += sub;
+    html += `<div class="receipt-item">
+        <div>
+          <div class="item-name-receipt">${item.name}</div>
+          <div class="item-qty-price">
+            <button class="qty-btn" onclick="changeQty(${index}, -1)">–</button>
+            ${item.quantity}
+            <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+            x Rp ${item.price.toLocaleString()}
+          </div>
+        </div>
+        <div>Rp ${sub.toLocaleString()}</div>
+      </div>`;
+  });
+  if(cart.length === 0) html = '<p style="padding:15px;color:#000;">Keranjang kosong</p>';
+  document.getElementById('receiptItems').innerHTML = html;
+
+  // Hitung diskon
+  let discount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.type === "percent") {
+      discount = total * (appliedPromo.value / 100);
+    } else if (appliedPromo.type === "nominal") {
+      discount = appliedPromo.value;
+    }
+  }
+
+  let finalTotal = total - discount;
+  if (discount > 0) {
+    html += `<div class="receipt-item">
+               <span>Diskon (${appliedPromo.code})</span><span>- Rp ${discount.toLocaleString()}</span>
+             </div>`;
+  }
+
+  document.getElementById('summaryTotal').textContent = 'Rp ' + finalTotal.toLocaleString();
+}
+
+function sendToWhatsApp(){
+  let name = document.getElementById('customerName').value.trim();
+  let username = document.getElementById('customerUsername').value.trim();
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  if(!name || !username || cart.length === 0){
+    alert("Harap isi nama, username, dan pastikan keranjang tidak kosong!");
+    return;
+  }
+  let msg = `Name: ${name}\nUsername: ${username}\n\nPesanan:\n`, total = 0;
+  cart.forEach(item => {
+    let sub = item.price * item.quantity;
+    total += sub;
+    msg += `${item.quantity} x ${item.name} - Rp ${sub.toLocaleString()}\n`;
+  });
+
+  // diskon
+  let discount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.type === "percent") {
+      discount = total * (appliedPromo.value / 100);
+    } else if (appliedPromo.type === "nominal") {
+      discount = appliedPromo.value;
+    }
+    msg += `\nPromo: ${appliedPromo.code} (-Rp ${discount.toLocaleString()})`;
+  }
+
+  let finalTotal = total - discount;
+  msg += `\n\nTotal: Rp ${finalTotal.toLocaleString()}`;
+  
+  // kosongkan keranjang setelah confirm
+  localStorage.removeItem('cart');
+  appliedPromo = null; // reset promo
+  updateCartCount();
+
+  window.open(`https://wa.me/6282382052250?text=${encodeURIComponent(msg)}`, '_blank');
+   }
     </script>
 </body>
 </html>
