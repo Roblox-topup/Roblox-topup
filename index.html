@@ -279,7 +279,7 @@
     let name = document.getElementById('customerName').value.trim();
     let address = document.getElementById('customerUsername').value.trim();
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    if(!name || !username || cart.length === 0){
+    if(!name || !address || cart.length === 0){
       alert("Harap isi nama, username, dan pastikan keranjang tidak kosong!");
       return;
     }
