@@ -161,7 +161,7 @@
     </div>
   </div>
 
-<script>
+    <script>
   let currentFilter = 'all';
   
   function updateCartCount(){
@@ -216,11 +216,9 @@
     };
     sectionTitle.textContent = titles[category] || 'All products';
     
-    let visibleCount = 0;
     cards.forEach(card => {
       if (category === 'all' || card.dataset.category === category) {
         card.style.display = 'block';
-        visibleCount++;
       } else {
         card.style.display = 'none';
       }
@@ -230,7 +228,6 @@
   function searchProducts() {
     const searchTerm = document.getElementById('searchBox').value.toLowerCase();
     const cards = document.querySelectorAll('.product-card');
-    let visibleCount = 0;
     
     cards.forEach(card => {
       const productName = card.dataset.name.toLowerCase();
@@ -239,7 +236,6 @@
       
       if (matchesSearch && matchesFilter) {
         card.style.display = 'block';
-        visibleCount++;
       } else {
         card.style.display = 'none';
       }
@@ -294,6 +290,11 @@
       msg += `${item.quantity} x ${item.name} - Rp ${sub.toLocaleString()}\n`;
     });
     msg += `\nTotal: Rp ${total.toLocaleString()}`;
+    
+    // kosongkan keranjang setelah confirm
+    localStorage.removeItem('cart');
+    updateCartCount();
+
     window.open(`https://wa.me/6282382052250?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
@@ -310,26 +311,9 @@
     document.getElementById('checkoutSection').style.display = 'none';
     updateCartCount();
   }
-  // kosongkan keranjang setelah confirm
-  localStorage.removeItem('cart');
-  updateCartCount();
-  showShop();
-}
 
-function showCheckout(){ 
-  document.getElementById('mainHeader').style.display='none'; 
-  document.getElementById('shopSection').style.display='none'; 
-  document.getElementById('checkoutSection').style.display='block'; 
-  loadReceipt();
-}
-function showShop(){
-  document.getElementById('mainHeader').style.display='block'; 
-  document.getElementById('shopSection').style.display='block'; 
-  document.getElementById('checkoutSection').style.display='none'; 
+  // inisialisasi awal
   updateCartCount();
-}
-
-  updateCartCount();
-</script>
+    </script>
 </body>
 </html>
