@@ -148,7 +148,7 @@
         <div class="checkout-title">Receipt</div>
       </div>
       <input type="text" id="customerName" class="input-field" placeholder="Your Name" />
-      <textarea id="customerAddress" class="input-field" placeholder="Username Roblox" rows="3"></textarea>
+      <textarea id="customerUsername" class="input-field" placeholder="Username Roblox" rows="3"></textarea>
       <div class="receipt-container">
         <div class="receipt-header">
           <div class="receipt-title">🧾 RECEIPT</div>
@@ -277,10 +277,10 @@
 
   function sendToWhatsApp(){
     let name = document.getElementById('customerName').value.trim();
-    let address = document.getElementById('customerAddress').value.trim();
+    let address = document.getElementById('customerUsername').value.trim();
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     if(!name || !address || cart.length === 0){
-      alert("Harap isi nama, alamat, dan pastikan keranjang tidak kosong!");
+      alert("Harap isi nama, username, dan pastikan keranjang tidak kosong!");
       return;
     }
     let msg = `Nama: ${name}\nAlamat: ${address}\n\nPesanan:\n`, total = 0;
