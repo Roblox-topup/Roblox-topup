@@ -456,6 +456,19 @@ function sendToWhatsApp(){
 
   window.open(`https://wa.me/6282382052250?text=${encodeURIComponent(msg)}`, '_blank');
    }
+     if (promoList[code]) {
+  let promo = promoList[code];
+  if (total >= promo.minSpend) {
+    appliedPromo = { code, ...promo };
+    promoMsg.textContent = `Promo ${code} berhasil diterapkan!`;
+    promoMsg.style.color = "green";
+    loadReceipt();
+  } else {
+    alert(`Minimal belanja Rp ${promo.minSpend.toLocaleString()} untuk pakai kode ini.`);
+    promoMsg.textContent = `Minimal belanja Rp ${promo.minSpend.toLocaleString()} untuk pakai kode ini.`;
+    promoMsg.style.color = "red";
+  }
+     }
     </script>
 </body>
 </html>
