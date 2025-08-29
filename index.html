@@ -209,15 +209,15 @@
       </div>
       <input type="text" id="customerName" class="input-field" placeholder="Your Name" />
       <textarea id="customerUsername" class="input-field" placeholder="Username Roblox" rows="3"></textarea>
+     <input type="text" id="promoCode" class="input-field" placeholder="Promo Code (Optional)" />
+<button class="add-btn" onclick="applyPromo()">Gunakan Promo</button>
+<p id="promoMessage" style="color:green; font-weight:600; margin-top:5px;"></p>
       <div class="receipt-container">
         <div class="receipt-header">
           <div class="receipt-title">🧾 RECEIPT</div>
           <div class="receipt-subtitle">Deshawn Shop</div>
         </div>
         <div class="receipt-items" id="receiptItems"></div>
-       <input type="text" id="promoCode" class="input-field" placeholder="Promo Code" />
-<button class="add-btn" onclick="applyPromo()">Gunakan Promo</button>
-<p id="promoMessage" style="color:green; font-weight:600; margin-top:5px;"></p>
         <div class="summary-row-receipt"><span>Total</span><span id="summaryTotal">Rp 0</span></div>
       </div>
       <button class="confirm-btn" onclick="sendToWhatsApp()">Confirm</button>
