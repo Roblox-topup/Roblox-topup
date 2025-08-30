@@ -248,7 +248,7 @@
       document.getElementById('robuxPrice').value = "Minimal 50 Robux"; 
       return; 
     }
-    let harga = robux * 200;
+    let harga = robux * 220;
     document.getElementById('robuxPrice').value = "Rp " + harga.toLocaleString();
   }
 
@@ -257,7 +257,7 @@
     if (robux < 50) { 
       return; // langsung batal tanpa alert
     }
-    let harga = robux * 200;
+    let harga = robux * 220;
     addToCart('robux-'+robux, robux + ' Robux', harga);
     updateCartCount();
   }
